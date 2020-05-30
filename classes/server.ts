@@ -17,25 +17,29 @@ export default class Server {
         this.app = express();
         this.port = SERVER_PORT;
         this.httpServer = new http.Server(this.app);
-        this.io = socketIO( this.httpServer );
+        this.io = socketIO(this.httpServer);
         this.listenSockets();
     }
 
-    public static get instance(){
+    public static get instance() {
         return this._instance || (this._instance = new this());
     }
 
-    private listenSockets(){
+    private listenSockets() {
         console.log('Escuchando conexiones - sockets');
         this.io.on('connection', client => {
-            console.log('Cliente conectado');
+            console.log(client.id);
 
+            // Conectar cliente
+            socket.conectarCliente(client);
+
+            // Config User
+            socket.configUser(client, this.io);
             // Messages
             socket.message(client, this.io);
             // Disconnect
             socket.disconnect(client);
 
-            
         });
     }
 
